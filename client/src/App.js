@@ -1,14 +1,18 @@
 import React from 'react';
-import Document from './components/Document'
-import Header from './components/Header'
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import Texteditor from './pages/text-editor/Texteditor';
+import Home from './pages/home/Home';
 import './css/App.css';
+import './css/home-style.css';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <Document />
-    </div>
+    <Router>
+        <Switch>
+            <Route path="/" component={Home} exact/>
+            <Route path="/text-editor" component={Texteditor} />
+        </Switch>
+    </Router>
   );
 }
 

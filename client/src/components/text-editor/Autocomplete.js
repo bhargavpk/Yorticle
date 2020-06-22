@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import WordItem from './word-item'
-import Trie from '../utils/trie';
+import Trie from '../../utils/trie';
 
 class Autocomplete extends Component{
 

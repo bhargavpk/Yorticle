@@ -1,9 +1,9 @@
 import React,{Component} from 'react'
 
 //import icons
-import fontSizeIcon from '../images/font-size-icon.png'
-import fontStyleIcon from '../images/font-style-icon.png'
-import fontColorIcon from '../images/font-color-icon.png'
+import fontSizeIcon from '../../images/font-size-icon.png'
+import fontStyleIcon from '../../images/font-style-icon.png'
+import fontColorIcon from '../../images/font-color-icon.png'
 
 //import dropdown options
 import FontSizeOptions from './options/FontSizeOptions'

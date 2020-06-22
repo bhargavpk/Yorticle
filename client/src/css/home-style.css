@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+body{
+    background-color: #FBC9F5;
+}
+
+#root{
+    z-index: 4;
+}
+
+header{
+    font-family:'Montserrat',sans-serif;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding:1rem;
+    background-color: #dc143c;
+    color:white;
+}
+.header-ele{
+    display: inline-block;
+}
+#main-header{
+    font-size:2.5em;
+    font-weight: bold;
+    text-align:left;
+    padding-left:0.5rem;
+}
+#info-header{
+    font-size:1.5em;
+    text-align: right;
+}
+
+#home-subheader-info{
+    font-size:2rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top:auto;
+    padding: 0 0.5em;
+    /* max-height: 4rem; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgb(255, 106, 135);
+    color:white;
+}
+
+#subheader-text{
+    margin: auto 0;
+}
+#account-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.account-nav-ele{
+    font-family: 'Montserrat',sans-serif,Georgia;
+    padding: 0.5em;
+    cursor: pointer;
+}
+.account-nav-ele span{
+    color: #FBC9F5;
+}
+.account-nav-ele:hover{
+    background-color: #dc143c;
+}
+
+#home-body{
+    padding-top: 4rem;
+    min-height:100%;
+    margin:auto 4rem;
+    text-align: center;
+}
+
+.form-component{
+    display: none;
+    background-color: #fd6572;
+    padding: 0.5em 1em;
+    box-shadow: 0 0 7px black;
+}
+
+input{
+    display: block;
+    padding:0.5em;
+    border-radius: 0.5em;
+    border-style: solid;
+    border-width: 1px;
+}
+.form-field{
+    padding:0.5em 0;
+}
+
+.show-form{
+    display: inline-block;
+}
+
+form button{
+    display:block;
+    margin: 0.5em auto;
+    padding: 0.5em;
+    border:0;
+    background-color: #dc143c;
+    color:white;
+    font-family: 'Montserrat', sans-serif;
+}

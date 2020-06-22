@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import isAlpha from '../utils/detectAlpha'
+import isAlpha from '../../utils/detectAlpha.js'
 import Autocomplete from './Autocomplete'
 import FontOptions from './FontOptions'
 
