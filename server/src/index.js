@@ -1,16 +1,18 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
+const express = require('express');
+const cors = require('cors');
 
-app.use(express.json())
-app.use(cors())
+require('../db/mongoose');
 
-const port = 9000
+const userRouter = require('./routers/user');
 
-app.get('/testAPI',(req,res) => {
-    res.send({message:'Hey'});
-});
+const app = express();
 
-app.listen(port,()=>{
-    console.log(`Listening to port ${port}`);
+app.use(express.json());
+app.use(cors());
+app.use(userRouter);
+
+const port = 9000;
+
+app.listen(port, () => {
+    console.log('Listening to port '+port);
 })
