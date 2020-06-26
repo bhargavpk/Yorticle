@@ -94,6 +94,10 @@ input{
     display: inline-block;
 }
 
+.form-err-message{
+    color: red;
+}
+
 form button{
     display:block;
     margin: 0.5em auto;

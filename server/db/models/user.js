@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     firstName:{
         type: String,
-        required: true,
         trim: true,
         validate(value){
             if(value === '')
@@ -17,7 +15,6 @@ const userSchema = new mongoose.Schema({
     },
     lastName:{
         type: String,
-        required: true,
         trim: true,
         validate(value){
             if(value === '')
@@ -28,7 +25,6 @@ const userSchema = new mongoose.Schema({
     },
     userName:{
         type: String,
-        required: true,
         validate(value){
             if(value.length < 4)
                 throw new Error('Username is too short');
@@ -53,7 +49,7 @@ const userSchema = new mongoose.Schema({
         }
     },
     tokens:[String]
-    //Add additional fields(token)
+    //Add additional fields(token if required instead of array)
 })
 
 userSchema.methods.getAuthToken = async function(){
@@ -61,26 +57,6 @@ userSchema.methods.getAuthToken = async function(){
     this.tokens = this.tokens.concat(token);
     return token;
 }
-
-userSchema.statics.findByLoginCredentials = async (userName, password) => {
-    const user = await User.findOne({userName});
-    if(!user)
-        throw new Error('Invalid username or password');
-    const isEqual = await bcrypt.compare(password, user.password);
-    if(!isEqual)
-        throw new Error('Invalid username or password');
-    return user;
-}
-
-userSchema.pre('save', async function(next){
-    //isModified true when doc is created or when the field is modified
-    
-    if(this.isModified('password'))
-        this.password = await bcrypt.hash(this.password, 8);
-    next();
-
-    //next will trigger next middleware that is save
-})
 
 const User = new mongoose.model('User',userSchema);
 
