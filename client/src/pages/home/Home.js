@@ -5,11 +5,18 @@ import LoginForm from '../../components/home/LoginForm'
 import SignupForm from '../../components/home/SignupForm'
 
 export default class Home extends Component {
+    constructor(props){
+        super(props);
+        this.options = ['Login', 'Sign up']
+        this.spanMessage = 'Have an account?'
+    }
+
     render() {
+        
         return (
-            <div style = {{minHeight:'100vh'}}>
+            <div id="home-component" style = {{minHeight:'100vh'}}>
                 <Homeheader />
-                <HomeheaderInfo />
+                <HomeheaderInfo options={this.options} spanMessage={this.spanMessage}/>
                 <div id="home-body">
                     <LoginForm />
                     <SignupForm />

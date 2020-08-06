@@ -6,8 +6,8 @@ export default class HomeheaderInfo extends Component {
             <div id="home-subheader-info">
                 <div id="subheader-text">Write, suggest and publish!</div>
                 <div id="account-nav">
-                    <div className="account-nav-ele"><span>Have an account?</span> Login</div>
-                    <div className="account-nav-ele">Sign up</div>
+        <div className="account-nav-ele"><span>{this.props.spanMessage}</span> {this.props.options[0]}</div>
+        <div className="account-nav-ele">{this.props.options[1]}</div>
                 </div>
             </div>
         )

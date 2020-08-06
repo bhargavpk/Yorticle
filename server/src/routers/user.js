@@ -8,6 +8,9 @@ const router = new express.Router();
 router.post('/signup', async (req,res) => {
     const user = new User(req.body);
     try{
+        const anotherUser = await User.findOne({userName: user.userName});
+        if(anotherUser)
+            throw new Error('Username has already been taken!')
         user.password = await bcrypt.hash(req.body.password, 8);
         const token = await user.getAuthToken();
         await user.save();
@@ -46,6 +49,15 @@ router.patch('/logout', auth, async (req,res) => {
         res.send();
     }catch(e){
         res.status(400).send({error:e});
+    }
+})
+router.patch('/logout_all', auth, async (req, res) => {
+    try{
+        req.user.tokens = [];
+        await req.user.save();
+        res.send({user: req.user})
+    }catch(e){
+        res.status(400).send();
     }
 })
 

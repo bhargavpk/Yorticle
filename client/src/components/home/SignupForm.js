@@ -31,17 +31,29 @@ export default class SignupForm extends Component {
         if(data.error)
         {
             const errObj = data.error;
-            var errMessage,err;
-            for(err in errObj.errors)
+            if(!errObj.errors)
             {
-                errMessage = errObj.errors[err].properties.message;
-                break;
+                this.errFormRef.current.innerHTML = 'Username has already been taken!';
+                setTimeout(() => {
+                    this.errFormRef.current.innerHTML = '';
+                    this.buttonRef.current.removeAttribute('disabled')
+                }, 2000);   
             }
-            //Enable form
-            this.errFormRef.current.innerHTML = errMessage;
-            setTimeout(() => {
-                this.errFormRef.current.innerHTML = '';
-            }, 2000);
+            else
+            {
+                var errMessage,err;
+                for(err in errObj.errors)
+                {
+                    errMessage = errObj.errors[err].properties.message;
+                    break;
+                }
+                //Enable form
+                this.errFormRef.current.innerHTML = errMessage;
+                setTimeout(() => {
+                    this.errFormRef.current.innerHTML = '';
+                    this.buttonRef.current.removeAttribute('disabled')
+                }, 2000);
+            }
         }
         else
         {
@@ -51,10 +63,10 @@ export default class SignupForm extends Component {
             jwtCookie.set('authToken',token,{path: '/'})
             //Add expiration in 5 days
         }
-        this.buttonRef.current.removeAttribute('disabled')
     }
 
     render() {
+        
         return (
             <div className="form-component show-form" id="signup-form">
                 <form ref = {this.formRef} onSubmit = {this.formButtonOnClick}>

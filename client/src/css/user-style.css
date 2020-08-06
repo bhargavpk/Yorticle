@@ -1,0 +1,28 @@
+#article-list-component{
+    margin: 2rem;
+}
+
+.article-item{
+    background-color: #fff;
+    border-radius: 5px;
+    height: 12rem;
+    width: 10rem;
+    max-width: 10rem;
+    margin: 1rem;
+    text-align: center;
+}
+.article-item:hover{
+    box-shadow: 0 0 7px black;
+}
+
+.article-item-title{
+    padding-bottom: 1rem;
+    font-weight: bold;
+}
+
+#article-list-component{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}

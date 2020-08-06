@@ -1,11 +1,33 @@
 import React from 'react';
 
 class Header extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.titleRef = React.createRef();
+    }
+
+    componentDidUpdate = () => {
+        this.titleRef.current.value = this.props.title
+        if(this.props.contentEditable === true)
+            this.titleRef.current.removeAttribute('readonly')
+    }
+
     render(){
+
         return(
-            <div id="header">
-                <h1 style={{textAlign:'left'}}>Engineering life!</h1>
-            </div>
+            <header id="texteditor-component-header">
+                <input type="text" placeholder="Title"
+                style={{
+                    width: '50%',
+                    textAlign:'left',
+                    fontSize:'1.3rem', 
+                    fontFamily:"'Montserrat', sans-serif"
+                }}
+                onKeyUp={this.props.onTypeEvent}
+                readOnly
+                ref={this.titleRef}/>
+            </header>
         )
     }
 }

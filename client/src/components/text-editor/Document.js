@@ -1,12 +1,16 @@
-import React, { Component } from 'react'
-import isAlpha from '../../utils/detectAlpha.js'
-import Autocomplete from './Autocomplete'
-import FontOptions from './FontOptions'
+import React, { Component } from 'react';
+import Cookies from 'universal-cookie';
+
+import Header from './Header';
+import isAlpha from '../../utils/detectAlpha.js';
+import Autocomplete from './Autocomplete';
+import Navbar from './Navbar';
 
 export default class Document extends Component {
 
     constructor(props){
         super(props);
+
         this.state = {
             words : ['',''],
             trieAction : {},
@@ -15,14 +19,70 @@ export default class Document extends Component {
                 color:'white',
                 fontFamily:'Arial',
                 fontSize:'1.5em',
-                // borderStyle:'solid',
-                // borderColor:'lightgrey',
-                // borderWidth:'2px',
-                // borderRadius:'5px',
                 textAlign:'left',
-            }
+            },
+            title: '',
+            initTrie: undefined    //initTrie.root must be undefined to access when first time trie comes
         }
         this.textInputRef = React.createRef();
+        this.titleInputRef = React.createRef();
+    }
+
+    componentDidUpdate  = prevProps => {
+        if(prevProps.content !== this.props.content)
+            this.textInputRef.current.value = this.props.content
+        if(this.props.contentEditable === true)
+            this.textInputRef.current.removeAttribute('readonly')
+        if((!this.state.initTrie)&&(this.props.trie))
+            this.setState({
+                initTrie: this.props.trie
+            })
+    }
+
+
+    onTitleType = e => {
+        this.setState({
+            title: e.target.value
+        })
+    }
+
+    getTrie = async (autocompleteTrie) => {
+        //Make all other input instances inactive
+
+        const title = this.state.title;
+        const content = this.textInputRef.current.value;
+        const token = (new Cookies()).get('authToken').toString();
+        const articleBody = {title, content, autocompleteTrie};
+        const res = await fetch('http://localhost:9000/article',{
+            method:'POST',
+            headers:{
+                'Accept':'application/json',
+                'Content-type':'application/json',
+                'Authorization':'Bearer '+token
+            },
+            body: JSON.stringify(articleBody)
+        });
+        const data = await res.json();
+        console.log(data);
+        this.setState({
+            trieAction:{
+                insert: false,
+                suggest: false,
+                getTrie: false
+            }
+        })
+    }
+
+    saveClickEvent = e => {
+        //Just to fire event to get trie from child
+        //It should not be possible to save empty document content or title
+        this.setState({
+            trieAction:{
+                insert: false,
+                suggest: false,
+                getTrie: true
+            }
+        })     
     }
 
 
@@ -87,7 +147,7 @@ export default class Document extends Component {
                 this.toggleState(false,true,dumWord1,dumWord2);
     }
 
-    clickEvent = e => {
+    suggestionClickEvent = e => {
         //console.log(e.target.innerText)
         var docText = this.textInputRef.current.value;
         var startPostion = this.textInputRef.current.selectionStart-1,endPosition = startPostion;
@@ -112,26 +172,38 @@ export default class Document extends Component {
 
     render() {
         return (
-            <div id="document">
-                <div id="text-box">
-                    <FontOptions fontSizeClickEvent={this.fontSizeClickEvent}/>
-                    <textarea 
-                    style={this.state.docStyle} 
-                    onKeyUp={this.onKeyType} 
-                    placeholder="Write something.."
-                    ref={this.textInputRef}
-                    />
-                </div>
-                <div id="suggestion-box">
-                    <div id="suggestion-header">
-                        Suggestions
+            <div>
+                <Header onTypeEvent = {this.onTitleType}
+                contentEditable={this.props.contentEditable}
+                title={this.props.title}/>
+                <div id="document">
+                    <div id="text-box">
+                        <Navbar
+                        fontSizeClickEvent={this.fontSizeClickEvent}
+                        saveClickEvent = {this.saveClickEvent}
+                        />
+                        <textarea 
+                        style={this.state.docStyle}
+                        onFocus={this.onFocusEvent} 
+                        onKeyUp={this.onKeyType} 
+                        placeholder="Write something.."
+                        ref={this.textInputRef}
+                        readOnly
+                        />
                     </div>
-                    <ul>
-                    <Autocomplete action={this.state.trieAction} 
-                    currentWords={this.state.words}
-                    clickEvent={this.clickEvent}
-                    />
-                    </ul>
+                    <div id="suggestion-box">
+                        <div id="suggestion-header">
+                            Suggestions
+                        </div>
+                        <ul>
+                        <Autocomplete trie={this.state.initTrie}
+                        action={this.state.trieAction} 
+                        currentWords={this.state.words}
+                        suggestionClickEvent={this.suggestionClickEvent}
+                        getTrie={this.getTrie}
+                        />
+                        </ul>
+                    </div>
                 </div>
             </div>
         )
