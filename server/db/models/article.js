@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 
+const reviewSchema = new mongoose.Schema({
+    reviewAuthor:{
+        type:String,
+        required:true
+    },
+    reviewContent:{
+        type:String,
+        required:true
+    }
+},{
+    timestamps:true
+})
+
 const articleSchema = new mongoose.Schema({
     title:{
         type:String,
@@ -9,7 +22,10 @@ const articleSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    content: String,
+    content:{
+        type: String,
+        required: true
+    },
     publish:{
         canPublish:{
             type: Boolean,
@@ -20,19 +36,7 @@ const articleSchema = new mongoose.Schema({
             default: false
         }
     },
-    autocompleteTrie:{
-        root: mongoose.Schema.Types.Mixed
-    },
-    suggestions:[{
-        suggestionAuthor:{
-            type: mongoose.Schema.Types.ObjectId,
-            required: true
-        },
-        suggestionContent:{
-            type: String,
-            required: true
-        }
-    }]
+    reviews:[reviewSchema]
 },{
     timestamps: true    //Get createdAt and updatedAt timestmaps
 });

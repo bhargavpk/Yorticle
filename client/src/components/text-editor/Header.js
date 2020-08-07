@@ -7,8 +7,9 @@ class Header extends React.Component{
         this.titleRef = React.createRef();
     }
 
-    componentDidUpdate = () => {
-        this.titleRef.current.value = this.props.title
+    componentDidUpdate = prevProps => {
+        if((this.props.title)&&(prevProps.title !== this.props.title))
+            this.titleRef.current.value = this.props.title
         if(this.props.contentEditable === true)
             this.titleRef.current.removeAttribute('readonly')
     }

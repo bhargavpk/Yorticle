@@ -4,6 +4,8 @@ import HomeheaderInfo from '../../components/home/HomeheaderInfo'
 import LoginForm from '../../components/home/LoginForm'
 import SignupForm from '../../components/home/SignupForm'
 
+import '../../css/home-style.css'
+
 export default class Home extends Component {
     constructor(props){
         super(props);

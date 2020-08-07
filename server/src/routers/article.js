@@ -28,11 +28,27 @@ router.get('/article/:id', auth, async (req,res) => {
     try{
         const article = await Article.findById(req.params.id);
         if(!article)
-            throw new Error('');
+            throw new Error();
         res.send({
             article,
             contentEditable: req.user._id.toString() === article.author.toString()
         })
+    }catch(e){
+        res.status(400).send({error:e})
+    }
+})
+
+router.patch('/review', auth, async (req,res)=>{
+    try{
+        const article = await Article.findById(req.query.id);
+        if(!article)
+            throw new Error()
+        article.reviews.push({
+            reviewAuthor: req.user.userName,
+            reviewContent: req.body.content
+        })
+        await article.save()
+        res.status(201).send(article)
     }catch(e){
         res.status(400).send({error:e})
     }

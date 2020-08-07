@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 
 import Header from './Header';
-import isAlpha from '../../utils/detectAlpha.js';
+import {isAlpha, generateWords} from '../../utils/detectAlpha.js';
 import Autocomplete from './Autocomplete';
 import Navbar from './Navbar';
 
@@ -21,8 +21,7 @@ export default class Document extends Component {
                 fontSize:'1.5em',
                 textAlign:'left',
             },
-            title: '',
-            initTrie: undefined    //initTrie.root must be undefined to access when first time trie comes
+            title: ''
         }
         this.textInputRef = React.createRef();
         this.titleInputRef = React.createRef();
@@ -30,13 +29,18 @@ export default class Document extends Component {
 
     componentDidUpdate  = prevProps => {
         if(prevProps.content !== this.props.content)
+        {
             this.textInputRef.current.value = this.props.content
+            //Handle for time lag
+            this.setState({
+                words:generateWords(this.props.content),
+                trieAction:{
+                    insert:true
+                }
+            })
+        }
         if(this.props.contentEditable === true)
             this.textInputRef.current.removeAttribute('readonly')
-        if((!this.state.initTrie)&&(this.props.trie))
-            this.setState({
-                initTrie: this.props.trie
-            })
     }
 
 
@@ -46,13 +50,13 @@ export default class Document extends Component {
         })
     }
 
-    getTrie = async (autocompleteTrie) => {
+    saveReqFn = async () => {
         //Make all other input instances inactive
 
         const title = this.state.title;
         const content = this.textInputRef.current.value;
         const token = (new Cookies()).get('authToken').toString();
-        const articleBody = {title, content, autocompleteTrie};
+        const articleBody = {title, content};
         const res = await fetch('http://localhost:9000/article',{
             method:'POST',
             headers:{
@@ -64,11 +68,11 @@ export default class Document extends Component {
         });
         const data = await res.json();
         console.log(data);
+        //Handle for data.error ie when document content is empty
         this.setState({
             trieAction:{
                 insert: false,
-                suggest: false,
-                getTrie: false
+                suggest: false
             }
         })
     }
@@ -76,13 +80,7 @@ export default class Document extends Component {
     saveClickEvent = e => {
         //Just to fire event to get trie from child
         //It should not be possible to save empty document content or title
-        this.setState({
-            trieAction:{
-                insert: false,
-                suggest: false,
-                getTrie: true
-            }
-        })     
+        this.saveReqFn()   
     }
 
 
@@ -196,7 +194,7 @@ export default class Document extends Component {
                             Suggestions
                         </div>
                         <ul>
-                        <Autocomplete trie={this.state.initTrie}
+                        <Autocomplete
                         action={this.state.trieAction} 
                         currentWords={this.state.words}
                         suggestionClickEvent={this.suggestionClickEvent}

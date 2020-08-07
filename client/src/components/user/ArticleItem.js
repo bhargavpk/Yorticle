@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
 
 export default class ArticleItem extends Component {
+    constructor(props){
+        super(props);
+        this.articleRef = React.createRef();
+        this.state = {}
+    }
+
+    componentDidMount(){
+        this.articleRef.current.addEventListener('click',(e)=>{
+            const url = '/text-editor?id='+this.props.article._id
+            window.location.href = url;
+        })
+    }
 
     getSlicedString(str, limit)
     {
@@ -16,10 +28,12 @@ export default class ArticleItem extends Component {
     }
     
     render() {
+        // if(this.state.url)
+        //     return <Redirect to={this.state.url}/>
         if(!this.props.article)
             return (<div></div>)
         return (
-            <div className="article-item">
+            <div className="article-item" ref={this.articleRef}>
                 <div className="article-item-title">
                     {this.getSlicedString(this.props.article.title, 15)}
                 </div>

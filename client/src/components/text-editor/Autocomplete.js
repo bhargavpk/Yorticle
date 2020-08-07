@@ -11,22 +11,9 @@ class Autocomplete extends Component{
             suggestionWords:[]
         }
     }
-
-    componentDidUpdate(prevProps){
-        console.log(this.props.trie)
-        if((this.props.trie)&&(prevProps.trie !== this.props.trie))
-            this.setState({
-                trie: this.props.trie
-            })
-    }
     
     componentWillReceiveProps(newProps){
-        if(newProps.action.getTrie)
-        {
-            newProps.getTrie(this.state.trie)
-            return;
-        }
-        if(newProps.action.insert)
+        if(newProps.action.insert === true)
         {
             this.props.currentWords.forEach(word => {
                 if(word !== '')
