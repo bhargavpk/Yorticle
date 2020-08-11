@@ -1,0 +1,25 @@
+#userinfo-par{
+    text-align: center;
+}
+
+#userinfo-box{
+    display: inline-block;
+    border: 2px solid purple;
+    border-radius: 5px;
+    border-top-width: 0;
+    min-width: 20rem;
+    font-size: 1.3rem;
+    color:white;
+    text-align: center;
+    margin:auto;
+}
+.userinfo-field{
+    background-color: #FF8EBE;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color:#E62756;
+    margin: 5px;
+    padding: 5px;
+}
+.userinfo-field span{
+    color:white
+}

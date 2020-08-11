@@ -19,6 +19,7 @@ export default class LoginForm extends Component {
         const bodyObj = {};
         formInputElements.forEach(node => {
             bodyObj[node.name] = node.value
+            node.setAttribute('disabled','disabled')
         })
         
         const res = await fetch('http://localhost:9000/login',{
@@ -32,6 +33,7 @@ export default class LoginForm extends Component {
         const data = await res.json();
         if(data.error)
         {
+            formInputElements.forEach(node => node.removeAttribute('disabled'))
             this.errFormRef.current.innerHTML = data.error;
             setTimeout(() => {
                 this.errFormRef.current.innerHTML = '';
@@ -39,12 +41,14 @@ export default class LoginForm extends Component {
         }
         else
         {
-            const {token} = data;
-            const jwtCookie = new Cookies();
-            jwtCookie.set('authToken',token,{path: '/'})
+            const {token,user:{userName}} = data;
+            const jwtCookie1 = new Cookies();
+            const jwtCookie2 = new Cookies();
+            jwtCookie1.set('authToken',token,{path: '/'})
+            jwtCookie2.set('username',userName,{path:'/'})
+            window.location.replace('/home')
             //Add expiration to 5 days
         }
-        this.buttonRef.current.removeAttribute('disabled')
     }
     render() {
         return (

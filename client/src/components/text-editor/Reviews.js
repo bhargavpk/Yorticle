@@ -30,7 +30,7 @@ export default class Reviews extends Component {
 
     render() {
         return (
-            <div class="review-box">
+            <div className="review-box">
                 <div id="review-header">Reviews</div>
                 <div id="review-postbox">
                     <textarea placeholder="Write a review" ref={this.textInpRef}/>

@@ -19,6 +19,7 @@ class Autocomplete extends Component{
                 if(word !== '')
                     this.state.trie.insertWord(word)
             })
+            this.props.changeLoading()
         }
         if(newProps.action.suggest === true)
             this.setState({

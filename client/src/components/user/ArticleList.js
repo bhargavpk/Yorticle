@@ -1,45 +1,29 @@
 import React, { Component } from 'react'
-import Cookies from 'universal-cookie'
+import Loader from 'react-loader-spinner'
 
 import ArticleItem from './ArticleItem'
 
 export default class ArticleList extends Component {
 
-    constructor(props)
-    {
-        super(props);
-        this.state={
-            articleList:{
-                articleArr:[]
-            }
-        }
-        
-        fetch('http://localhost:9000/article',{
-            method:'GET',
-            headers:{
-                    'Authorization':'Bearer '+(new Cookies()).get('authToken')
-                }
-        }).then(res => res.json())
-        .then((data) => {
-                
-            this.setState({
-                articleList: data
-            })
-        
-        })
-    }
-        
-
     render() {
         
-        const articleListArr = Object.values(this.state.articleList.articleArr)
+        const articleListArr = Object.values(this.props.articleList.articleArr)
+        if(this.props.loading === true)
+            return(
+                <div id="article-list-component">
+                   <div id="article-loader">
+                       <Loader type="ThreeDots" color="#E7013B" height="100" width="100"/>
+                    </div>
+                </div>
+            )
+        else
         return (
             <div id="article-list-component">
-                    
                 { 
-                        articleListArr.map((article, index) => (
-                            <ArticleItem key={index} article={article}/>
-                        ))
+                    articleListArr.map((article, index) => (
+                        <ArticleItem key={index} article={article}
+                        showStatus={this.props.showStatus} publish={article.publish}/>
+                    ))
                 }
     
             </div>

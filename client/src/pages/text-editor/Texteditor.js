@@ -15,10 +15,12 @@ export default class Texteditor extends Component{
             contentEditable:false,
             reviews:[]
         }
+        if(!((new Cookies()).get('authToken')))
+            window.location.replace('/')
     }
 
     componentDidMount(){
-        const articleId = queryString.parse(this.props.location.search).id;
+       const articleId = queryString.parse(this.props.location.search).id;
        if(articleId)
        {
            //Make all components unresponsive
@@ -79,12 +81,15 @@ export default class Texteditor extends Component{
     }
 
     render(){
+        if(!((new Cookies()).get('authToken')))
+            return <div></div>
         return(
             <div id="texteditor-body">
                 <Document
                 title={this.state.title}
                 content={this.state.content}
                 contentEditable={this.state.contentEditable}
+                articleId={queryString.parse(this.props.location.search).id}
                 />
                 <Reviews reviews={this.state.reviews}
                 reviewStat={this.state.reviewStat}

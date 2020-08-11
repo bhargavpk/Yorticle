@@ -8,10 +8,9 @@ const router = new express.Router();
 router.post('/signup', async (req,res) => {
     const user = new User(req.body);
     try{
-        const anotherUser = await User.findOne({userName: user.userName});
+        const anotherUser = await User.findOne({userName: req.body.userName});
         if(anotherUser)
             throw new Error('Username has already been taken!')
-        user.password = await bcrypt.hash(req.body.password, 8);
         const token = await user.getAuthToken();
         await user.save();
         res.status(201).send({user ,token});
@@ -42,11 +41,10 @@ router.post('/auth_test', auth, async (req,res) => {
 })
 
 router.patch('/logout', auth, async (req,res) => {
-    try
-    {
+    try{
         req.user.tokens = req.user.tokens.filter(token => { return token !== req.token});
         await req.user.save();
-        res.send();
+        res.send({});
     }catch(e){
         res.status(400).send({error:e});
     }

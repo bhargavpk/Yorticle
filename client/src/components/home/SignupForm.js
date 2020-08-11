@@ -11,14 +11,14 @@ export default class SignupForm extends Component {
 
     formButtonOnClick = async e => {
         e.preventDefault();
-        //Disable form
 
         const formInputElements = Array.from(e.target.elements);
         const bodyObj = {};
         formInputElements.forEach(node => {
             bodyObj[node.name] = node.value
+            node.setAttribute('disabled','disabled')
         })
-        
+
         const res = await fetch('http://localhost:9000/signup',{
             method:'POST',
             headers:{
@@ -30,13 +30,15 @@ export default class SignupForm extends Component {
         const data = await res.json();
         if(data.error)
         {
+            formInputElements.forEach(node => {
+                node.removeAttribute('disabled')
+            })
             const errObj = data.error;
             if(!errObj.errors)
             {
-                this.errFormRef.current.innerHTML = 'Username has already been taken!';
+                this.errFormRef.current.innerHTML = 'Username has been taken!';
                 setTimeout(() => {
                     this.errFormRef.current.innerHTML = '';
-                    this.buttonRef.current.removeAttribute('disabled')
                 }, 2000);   
             }
             else
@@ -47,20 +49,20 @@ export default class SignupForm extends Component {
                     errMessage = errObj.errors[err].properties.message;
                     break;
                 }
-                //Enable form
                 this.errFormRef.current.innerHTML = errMessage;
                 setTimeout(() => {
-                    this.errFormRef.current.innerHTML = '';
-                    this.buttonRef.current.removeAttribute('disabled')
+                    this.errFormRef.current.innerHTML = ''
                 }, 2000);
             }
         }
         else
         {
-            //Make form unresponsive
-            const {token} = data;
-            const jwtCookie = new Cookies();
-            jwtCookie.set('authToken',token,{path: '/'})
+            const {token,user:{userName}} = data;
+            const jwtCookie1 = new Cookies();
+            const jwtCookie2 = new Cookies();
+            jwtCookie1.set('authToken',token,{path: '/'});
+            jwtCookie2.set('username',userName,{path:'/'});
+            window.location.replace('/home')
             //Add expiration in 5 days
         }
     }

@@ -21,13 +21,20 @@ export default class Document extends Component {
                 fontSize:'1.5em',
                 textAlign:'left',
             },
-            title: ''
+            title: '',
+            loading: true
         }
         this.textInputRef = React.createRef();
         this.titleInputRef = React.createRef();
+        this.loadingRef = React.createRef();
     }
 
     componentDidUpdate  = prevProps => {
+        if(this.state.loading === false)
+        {
+            this.loadingRef.current.textContent = ''
+            this.loadingRef.current.removeAttribute('id')
+        }
         if(prevProps.content !== this.props.content)
         {
             this.textInputRef.current.value = this.props.content
@@ -39,10 +46,20 @@ export default class Document extends Component {
                 }
             })
         }
+        if(prevProps.title !== this.props.title)
+            this.setState({
+                title:this.props.title
+            })
         if(this.props.contentEditable === true)
             this.textInputRef.current.removeAttribute('readonly')
     }
 
+    changeLoading = () => {
+        if(this.state.loading === true)
+            this.setState({
+                loading: false
+            })
+    }
 
     onTitleType = e => {
         this.setState({
@@ -50,24 +67,28 @@ export default class Document extends Component {
         })
     }
 
-    saveReqFn = async () => {
+    saveReqFn = async (obj) => {
         //Make all other input instances inactive
 
         const title = this.state.title;
         const content = this.textInputRef.current.value;
         const token = (new Cookies()).get('authToken').toString();
-        const articleBody = {title, content};
-        const res = await fetch('http://localhost:9000/article',{
+        const articleBody = {title, content, publish:obj.publish};
+        var url;
+        if(this.props.articleId)
+            url = 'http://localhost:9000/article?id='+this.props.articleId
+        else
+            url = 'http://localhost:9000/article'
+        await fetch(url,{
             method:'POST',
             headers:{
                 'Accept':'application/json',
-                'Content-type':'application/json',
+                'Content-Type':'application/json',
                 'Authorization':'Bearer '+token
             },
             body: JSON.stringify(articleBody)
         });
-        const data = await res.json();
-        console.log(data);
+        // const data = await res.json();
         //Handle for data.error ie when document content is empty
         this.setState({
             trieAction:{
@@ -78,9 +99,11 @@ export default class Document extends Component {
     }
 
     saveClickEvent = e => {
-        //Just to fire event to get trie from child
         //It should not be possible to save empty document content or title
-        this.saveReqFn()   
+        const obj = {publish:false}
+        if(e.target.id === 'publish-btn')
+            obj.publish = true
+        this.saveReqFn(obj)   
     }
 
 
@@ -93,7 +116,6 @@ export default class Document extends Component {
 
 
     onKeyType = e => {
-        
         var endPosition1 = e.target.selectionStart;
         var startPosition2 = e.target.selectionStart;
         const docText = e.target.value;
@@ -170,15 +192,17 @@ export default class Document extends Component {
 
     render() {
         return (
-            <div>
+            <div id="document-box">
                 <Header onTypeEvent = {this.onTitleType}
                 contentEditable={this.props.contentEditable}
                 title={this.props.title}/>
+                <div id="texteditor-loading" ref={this.loadingRef}>Fetching the article...</div>
                 <div id="document">
                     <div id="text-box">
                         <Navbar
                         fontSizeClickEvent={this.fontSizeClickEvent}
                         saveClickEvent = {this.saveClickEvent}
+                        readWrite = {this.props.contentEditable}
                         />
                         <textarea 
                         style={this.state.docStyle}
@@ -199,6 +223,7 @@ export default class Document extends Component {
                         currentWords={this.state.words}
                         suggestionClickEvent={this.suggestionClickEvent}
                         getTrie={this.getTrie}
+                        changeLoading={this.changeLoading}
                         />
                         </ul>
                     </div>

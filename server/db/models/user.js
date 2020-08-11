@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -20,7 +21,7 @@ const userSchema = new mongoose.Schema({
             if(value === '')
                 throw new Error('Last name cant be empty!');
             if(!validator.isAlpha(value))
-                throw new Error('First name cant have special characters!');
+                throw new Error('Last name cant have special characters!');
         }
     },
     userName:{
@@ -37,19 +38,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         validate(value){
             if(value.length < 8)
-                throw new Error('Password is too short!');
-            if(!validator.isAlpha(value))
-            {
-                //Check is alpha numeric handles case where only alphabets in input
-                if(validator.isAlphanumeric(value))
-                    throw new Error('Password must contain at least one special character');
-            }
-            else
-                throw new Error('Password must  also contain number(s) and special character(s)');
+                throw new Error('Password is too short!')
+            if(validator.isAlphanumeric(value))
+                throw new Error('Password must contain at least one special character!')
         }
     },
     tokens:[String]
-    //Add additional fields(token if required instead of array)
 })
 
 userSchema.methods.getAuthToken = async function(){
@@ -57,6 +51,12 @@ userSchema.methods.getAuthToken = async function(){
     this.tokens = this.tokens.concat(token);
     return token;
 }
+
+userSchema.pre('save',async function(next){
+    if(this.isModified('password'))
+        this.password = await bcrypt.hash(this.password,8)
+    next()
+})
 
 const User = new mongoose.model('User',userSchema);
 

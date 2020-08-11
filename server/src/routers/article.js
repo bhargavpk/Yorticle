@@ -1,15 +1,34 @@
 const express = require('express');
 const Article = require('../../db/models/article');
 const auth = require('../middleware/auth')
+const User = require('../../db/models/user')
 
 const router = new express.Router();
 
 router.post('/article', auth, async (req,res) => {
-    req.body.author = req.user._id;
-    const article = new Article(req.body);
     try{
-        await article.save();
-        res.send({article});
+        if(!req.query.id){
+            req.body.author = req.user.userName;
+            const article = new Article(req.body);
+            article.publish.canPublish = req.body.publish
+            await article.save();
+            res.send({article});
+        }
+        else{
+            const article = await Article.findById(req.query.id)
+            if(!article)
+                throw new Error()
+            if(article.author === req.user.userName)
+            {
+                article.content = req.body.content;
+                article.title = req.body.title
+                article.publish.canPublish = req.body.publish
+                await article.save();
+                res.status(201).send({article})
+            }
+            else
+                throw new Error()
+        }
     }catch(e){
         res.status(400).send({error:e})
     }
@@ -17,10 +36,30 @@ router.post('/article', auth, async (req,res) => {
 
 router.get('/article', auth, async (req,res) => {
     try{
-        const articleArr = await Article.find({}).select('_id title content');
+        const articleArr = await Article.find({'publish.canPublish':true}).select('_id title content author');
         res.send({articleArr});
     }catch(e){
         res.status(400).send({error:e});
+    }
+})
+
+router.get('/account/:userName', auth, async (req,res)=>{
+    const userName = req.params.userName;
+    try{
+        const userDoc = await User.findOne({userName}).select('-tokens -password')
+        const {firstName, lastName} = userDoc
+        var user = {firstName, lastName, userName}
+        const articleArr = await Article.find({author:userDoc.userName}).select('_id title content publish author')
+        const articleArr1 = articleArr.filter(article => {
+                return article.publish.canPublish
+            })
+        user.publishCount = articleArr1.length
+        if(userName !== req.user.userName)
+            res.send({articleList:{articleArr:articleArr1},user})
+        else
+            res.send({articleList:{articleArr},user})
+    }catch(e){
+        res.status(400).send({error:e})
     }
 })
 
@@ -29,9 +68,11 @@ router.get('/article/:id', auth, async (req,res) => {
         const article = await Article.findById(req.params.id);
         if(!article)
             throw new Error();
+        if((article.author !== req.user.userName)&&(article.publish.canPublish === false))
+            throw new Error('Article not published yet')
         res.send({
             article,
-            contentEditable: req.user._id.toString() === article.author.toString()
+            contentEditable: req.user.userName === article.author
         })
     }catch(e){
         res.status(400).send({error:e})

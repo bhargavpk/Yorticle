@@ -37,7 +37,7 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
     margin-top:auto;
     padding: 0 0.5em;
-    /* max-height: 4rem; */
+    min-height: 4rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -96,7 +96,8 @@ input{
 }
 
 .form-err-message{
-    color: red;
+    color: #FFCCD9;
+    max-width: 15rem;
 }
 
 form button{

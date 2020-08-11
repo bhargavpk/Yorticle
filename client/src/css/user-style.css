@@ -1,8 +1,19 @@
 #article-list-component{
     margin: 2rem;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+#article-loader{
+    display: inline;
+    margin:auto;
 }
 
 .article-item{
+    position: relative;
     background-color: #fff;
     border-radius: 5px;
     height: 12rem;
@@ -10,6 +21,7 @@
     max-width: 10rem;
     margin: 1rem;
     text-align: center;
+    cursor: pointer;
 }
 .article-item:hover{
     box-shadow: 0 0 7px black;
@@ -20,9 +32,19 @@
     font-weight: bold;
 }
 
-#article-list-component{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+.article-item-author{
+    position: absolute;
+    width:100%;
+    font-size:0.8rem;
+    font-weight: bold;
+    bottom:2rem;
+}
+
+.article-status{
+    position: absolute;
+    bottom: 0;  
+    width:100%;
+    color: green;
+    text-align: center;
+
 }

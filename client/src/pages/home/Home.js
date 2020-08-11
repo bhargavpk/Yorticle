@@ -14,11 +14,11 @@ export default class Home extends Component {
     }
 
     render() {
-        
         return (
             <div id="home-component" style = {{minHeight:'100vh'}}>
                 <Homeheader />
-                <HomeheaderInfo options={this.options} spanMessage={this.spanMessage}/>
+                <HomeheaderInfo options={this.options} spanMessage={this.spanMessage}
+                page={'home'}/>
                 <div id="home-body">
                     <LoginForm />
                     <SignupForm />
