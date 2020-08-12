@@ -36,7 +36,8 @@ router.post('/article', auth, async (req,res) => {
 
 router.get('/article', auth, async (req,res) => {
     try{
-        const articleArr = await Article.find({'publish.canPublish':true}).select('_id title content author');
+        const articleArr = await Article.find({'publish.canPublish':true}).sort({updatedAt:-1})
+                                        .select('_id title content author').limit(20);
         res.send({articleArr});
     }catch(e){
         res.status(400).send({error:e});
@@ -49,7 +50,7 @@ router.get('/account/:userName', auth, async (req,res)=>{
         const userDoc = await User.findOne({userName}).select('-tokens -password')
         const {firstName, lastName} = userDoc
         var user = {firstName, lastName, userName}
-        const articleArr = await Article.find({author:userDoc.userName}).select('_id title content publish author')
+        const articleArr = await Article.find({author:userDoc.userName}).sort({updatedAt:-1}).select('_id title content publish author')
         const articleArr1 = articleArr.filter(article => {
                 return article.publish.canPublish
             })

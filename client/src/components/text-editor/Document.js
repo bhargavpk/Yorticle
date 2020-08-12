@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
+import Loader from 'react-loader-spinner'
 
 import Header from './Header';
 import {isAlpha, generateWords} from '../../utils/detectAlpha.js';
@@ -22,7 +23,7 @@ export default class Document extends Component {
                 textAlign:'left',
             },
             title: '',
-            loading: true
+            loading: (!this.props.id)?false:true
         }
         this.textInputRef = React.createRef();
         this.titleInputRef = React.createRef();
@@ -30,11 +31,6 @@ export default class Document extends Component {
     }
 
     componentDidUpdate  = prevProps => {
-        if(this.state.loading === false)
-        {
-            this.loadingRef.current.textContent = ''
-            this.loadingRef.current.removeAttribute('id')
-        }
         if(prevProps.content !== this.props.content)
         {
             this.textInputRef.current.value = this.props.content
@@ -50,8 +46,10 @@ export default class Document extends Component {
             this.setState({
                 title:this.props.title
             })
-        if(this.props.contentEditable === true)
+        if((this.props.contentEditable === true)&&(this.state.loading === false))
             this.textInputRef.current.removeAttribute('readonly')
+        else
+            this.textInputRef.current.setAttribute('readonly','readonly')
     }
 
     changeLoading = () => {
@@ -67,19 +65,19 @@ export default class Document extends Component {
         })
     }
 
-    saveReqFn = async (obj) => {
+    saveReqFn = obj => {
         //Make all other input instances inactive
 
         const title = this.state.title;
         const content = this.textInputRef.current.value;
-        const token = (new Cookies()).get('authToken').toString();
+        const token = (new Cookies()).get('authToken')
         const articleBody = {title, content, publish:obj.publish};
         var url;
         if(this.props.articleId)
             url = 'http://localhost:9000/article?id='+this.props.articleId
         else
             url = 'http://localhost:9000/article'
-        await fetch(url,{
+        fetch(url,{
             method:'POST',
             headers:{
                 'Accept':'application/json',
@@ -87,19 +85,28 @@ export default class Document extends Component {
                 'Authorization':'Bearer '+token
             },
             body: JSON.stringify(articleBody)
-        });
-        // const data = await res.json();
-        //Handle for data.error ie when document content is empty
-        this.setState({
-            trieAction:{
-                insert: false,
-                suggest: false
-            }
+        }).then(res => res.json())
+        .then(data => {
+            setTimeout(()=>{
+                this.setState({
+                trieAction:{
+                    insert: false,
+                    suggest: false
+                },
+                loading:false
+            })
+            })
         })
     }
 
     saveClickEvent = e => {
-        //It should not be possible to save empty document content or title
+        this.setState({
+            trieAction:{
+                insert: false,
+                suggest: false
+            },
+            loading:true
+        })
         const obj = {publish:false}
         if(e.target.id === 'publish-btn')
             obj.publish = true
@@ -191,12 +198,18 @@ export default class Document extends Component {
     }
 
     render() {
+        var loadingEle = (<div></div>)
+        if(this.state.loading === true)
+            loadingEle = (<Loader type="ThreeDots" color="#E7013B" height="100" width="100"/>)
         return (
             <div id="document-box">
                 <Header onTypeEvent = {this.onTitleType}
                 contentEditable={this.props.contentEditable}
+                loading={this.state.loading}
                 title={this.props.title}/>
-                <div id="texteditor-loading" ref={this.loadingRef}>Fetching the article...</div>
+                <div id="texteditor-loading" ref={this.loadingRef}>
+                    {loadingEle}
+                </div>
                 <div id="document">
                     <div id="text-box">
                         <Navbar

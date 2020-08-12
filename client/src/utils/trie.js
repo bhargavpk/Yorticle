@@ -55,7 +55,7 @@ class Trie{
         }
         var q = new Queue()
         q.push({trieNode,word:prefWord});
-        while(!q.empty())
+        while((!q.empty())&&(wordArr.length < 19))
         {
             let childNode = q.front().trieNode
             if(childNode.isEndOfWord)

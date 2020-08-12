@@ -10,8 +10,10 @@ class Header extends React.Component{
     componentDidUpdate = prevProps => {
         if((this.props.title)&&(prevProps.title !== this.props.title))
             this.titleRef.current.value = this.props.title
-        if(this.props.contentEditable === true)
+        if((this.props.contentEditable === true)&&(this.props.loading === false))
             this.titleRef.current.removeAttribute('readonly')
+        else
+        this.titleRef.current.setAttribute('readonly','readonly')
     }
 
     render(){

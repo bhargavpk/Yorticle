@@ -1,3 +1,16 @@
+#texteditor-ref{
+    text-align: center;
+    padding:0.5rem;
+    font-size: 1.5rem;    
+}
+#texteditor-ref a{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color:rgb(255, 106, 135)
+}
+#texteditor-ref a:hover{
+    color:#dc143c
+}
+
 #article-list-component{
     margin: 2rem;
     display: flex;

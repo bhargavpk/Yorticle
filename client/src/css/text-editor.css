@@ -6,23 +6,12 @@
   background-color: #d5d5d5;
 }
 
-#document-body{
-  position: relative;
-}
-
 #texteditor-loading{
   position: absolute;
-  left: 2rem;
-  right: 1rem;
-  min-height: 92%;
-  background-color: black;
-  color:white;
-  font-size: 1.5rem;
-  opacity: 0.5;
-  z-index:10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 50vh;
+  width:100%;
+  margin:auto;
+  z-index: 10;
 }
 
 #texteditor-component-header{
@@ -139,6 +128,8 @@
   font-size:1.5em;
   flex-basis:20%;
   min-width:40px;
+  max-height: 90vh;
+  overflow-y:scroll;
 }
 #suggestion-header{
   color:#3D3D3D;

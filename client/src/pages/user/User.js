@@ -40,6 +40,9 @@ class User extends Component{
             <div id="home-component" style = {{minHeight:'100vh'}}>
                 <Homeheader />
                 <HomeheaderInfo options={['Account','Log out']} spanMessage={''}/>
+                <div id="texteditor-ref">
+                    <a href="/text-editor">Write a new article</a>
+                </div>
                 <ArticleList articleList={this.state.articleList} showStatus={false} loading={this.state.loading}/>
             </div>
         )
