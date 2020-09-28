@@ -19,7 +19,7 @@ export default class SignupForm extends Component {
             node.setAttribute('disabled','disabled')
         })
 
-        const res = await fetch('http://localhost:9000/signup',{
+        const res = await fetch('/signup',{
             method:'POST',
             headers:{
                 'Content-type':'application/json',

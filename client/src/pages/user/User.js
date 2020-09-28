@@ -20,7 +20,7 @@ class User extends Component{
         if(!(new Cookies()).get('authToken'))
             window.location.replace('/')
         
-        fetch('http://localhost:9000/article',{
+        fetch('/article',{
             method:'GET',
             headers:{
                     'Authorization':'Bearer '+(new Cookies()).get('authToken')

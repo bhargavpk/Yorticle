@@ -22,7 +22,7 @@ export default class LoginForm extends Component {
             node.setAttribute('disabled','disabled')
         })
         
-        const res = await fetch('http://localhost:9000/login',{
+        const res = await fetch('/login',{
             method:'POST',
             headers:{
                 'Content-type':'application/json',

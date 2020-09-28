@@ -44,7 +44,7 @@ router.get('/article', auth, async (req,res) => {
     }
 })
 
-router.get('/account/:userName', auth, async (req,res)=>{
+router.get('/user/:userName', auth, async (req,res)=>{
     const userName = req.params.userName;
     try{
         const userDoc = await User.findOne({userName}).select('-tokens -password')

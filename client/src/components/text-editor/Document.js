@@ -23,7 +23,8 @@ export default class Document extends Component {
                 textAlign:'left',
             },
             title: '',
-            loading: (!this.props.id)?false:true
+            loading: (!this.props.id)?false:true,
+            checkArticle:true
         }
         this.textInputRef = React.createRef();
         this.titleInputRef = React.createRef();
@@ -31,7 +32,7 @@ export default class Document extends Component {
     }
 
     componentDidUpdate  = prevProps => {
-        if(prevProps.content !== this.props.content)
+        if((this.props.checkArticle === true)&&(this.state.checkArticle === true))
         {
             this.textInputRef.current.value = this.props.content
             //Handle for time lag
@@ -39,7 +40,9 @@ export default class Document extends Component {
                 words:generateWords(this.props.content),
                 trieAction:{
                     insert:true
-                }
+                },
+                loading:true,
+                checkArticle:false
             })
         }
         if(prevProps.title !== this.props.title)
@@ -74,9 +77,9 @@ export default class Document extends Component {
         const articleBody = {title, content, publish:obj.publish};
         var url;
         if(this.props.articleId)
-            url = 'http://localhost:9000/article?id='+this.props.articleId
+            url = '/article?id='+this.props.articleId
         else
-            url = 'http://localhost:9000/article'
+            url = '/article'
         fetch(url,{
             method:'POST',
             headers:{

@@ -23,7 +23,7 @@ export default class Account extends Component {
         else
         {
             const userName = this.props.match.params.user
-            fetch('http://localhost:9000/account/'+userName,{
+            fetch('/user/'+userName,{
                 method:'GET',
                 headers:{
                     'Authorization':'Bearer '+(new Cookies()).get('authToken')

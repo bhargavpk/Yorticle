@@ -13,7 +13,8 @@ export default class Texteditor extends Component{
         this.state = {
             title:'',
             contentEditable:false,
-            reviews:[]
+            reviews:[],
+            checkArticle:false
         }
         if(!((new Cookies()).get('authToken')))
             window.location.replace('/')
@@ -24,7 +25,7 @@ export default class Texteditor extends Component{
        if(articleId)
        {
            //Make all components unresponsive
-            fetch('http://localhost:9000/article/'+articleId,{
+            fetch('/article/'+articleId,{
                 method:'GET',
                 headers:{
                     'Authorization':'Bearer '+(new Cookies()).get('authToken')
@@ -37,7 +38,8 @@ export default class Texteditor extends Component{
                     const {title,content,reviews} = data.article;
                     this.setState({
                         title,content,reviews,
-                        contentEditable:data.contentEditable
+                        contentEditable:data.contentEditable,
+                        checkArticle:true
                     })
                 }
             })
@@ -90,6 +92,7 @@ export default class Texteditor extends Component{
                 content={this.state.content}
                 contentEditable={this.state.contentEditable}
                 articleId={queryString.parse(this.props.location.search).id}
+                checkArticle={this.state.checkArticle}
                 />
                 <Reviews reviews={this.state.reviews}
                 reviewStat={this.state.reviewStat}

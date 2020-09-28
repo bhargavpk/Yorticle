@@ -11,7 +11,7 @@ export default class HomeheaderInfo extends Component {
     secondDivClickEvent = e => {
         if(this.props.page !== 'home')
         {
-            fetch('http://localhost:9000/logout',{
+            fetch('/logout',{
                 method:'PATCH',
                 headers:{
                     'Authorization':'Bearer '+(new Cookies()).get('authToken')

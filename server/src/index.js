@@ -13,7 +13,7 @@ app.use(cors());
 app.use(userRouter);
 app.use(articleRouter);
 
-const port = 9000;
+const port = process.env.PORT;
 
 app.listen(port, () => {
     console.log('Listening to port '+port);
