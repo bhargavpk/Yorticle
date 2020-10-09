@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
 import Cookies from 'universal-cookie';
 
 export default class LoginForm extends Component {
@@ -7,6 +8,9 @@ export default class LoginForm extends Component {
         super(props);
         this.errFormRef = React.createRef();
         this.buttonRef = React.createRef();
+        this.state = {
+            userAuth: false
+        }
     }
 
     formButtonOnClick = async e => {
@@ -46,11 +50,18 @@ export default class LoginForm extends Component {
             const jwtCookie2 = new Cookies();
             jwtCookie1.set('authToken',token,{path: '/'})
             jwtCookie2.set('username',userName,{path:'/'})
-            window.location.replace('/home')
+            this.setState({
+                userAuth: true
+            })
+            // window.location.replace('/home')
             //Add expiration to 5 days
         }
     }
     render() {
+        if(this.state.userAuth === true)
+        {
+            return <Redirect to='/home' />
+        }
         return (
             <div className="form-component" id="login-form">
                 <form onSubmit = {this.formButtonOnClick}>
