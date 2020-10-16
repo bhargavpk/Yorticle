@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Cookies from 'universal-cookie'
+import Cookies from 'universal-cookie';
+import {Redirect} from 'react-router-dom'
 
 import '../../css/user-style.css'
 
@@ -15,10 +16,13 @@ class User extends Component{
             articleList:{
                 articleArr:[]
             },
-            loading:true
+            loading:true,
+            userAuth: false
         }
         if(!(new Cookies()).get('authToken'))
-            window.location.replace('/')
+            this.setState({
+                userAuth: false
+            })
         
         fetch('/article',{
             method:'GET',
@@ -36,6 +40,12 @@ class User extends Component{
     }
 
     render(){
+
+        if(this.state.userAuth === false)
+        {
+            <Redirect to = '/' />
+        }
+
         return (
             <div id="home-component" style = {{minHeight:'100vh'}}>
                 <Homeheader />
