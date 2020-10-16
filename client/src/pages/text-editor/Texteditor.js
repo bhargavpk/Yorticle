@@ -60,7 +60,7 @@ export default class Texteditor extends Component{
     reviewButtonClickEvent = reviewContent => {
         const bodyObj = {content: reviewContent}
         const articleId = queryString.parse(this.props.location.search).id;
-        fetch('http://localhost:9000/review?id='+articleId,{
+        fetch('/review?id='+articleId,{
             method:'PATCH',
             headers:{
                 'Authorization':'Bearer '+(new Cookies()).get('authToken'),
