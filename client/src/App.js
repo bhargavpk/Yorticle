@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {BrowserRouter , Route} from 'react-router-dom';
 
 import Home from './pages/home/Home';
 import User from './pages/user/User';
@@ -8,12 +8,12 @@ import Texteditor from './pages/text-editor/Texteditor';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
             <Route path="/" component={Home} exact/>
             <Route path="/home" component={User} />
             <Route path="/account/:user" component={Account}/>
             <Route path="/text-editor" component={Texteditor} />
-    </Router>
+    </BrowserRouter>
   );
 }
 

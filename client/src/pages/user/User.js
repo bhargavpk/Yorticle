@@ -17,7 +17,7 @@ class User extends Component{
                 articleArr:[]
             },
             loading:true,
-            userAuth: false
+            userAuth: true
         }
         if(!(new Cookies()).get('authToken'))
             this.setState({
@@ -43,7 +43,7 @@ class User extends Component{
 
         if(this.state.userAuth === false)
         {
-            <Redirect to = '/' />
+            return <Redirect to = '/' />
         }
 
         return (
